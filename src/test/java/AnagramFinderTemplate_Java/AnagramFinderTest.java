@@ -4,77 +4,125 @@
 package AnagramFinderTemplate_Java;
 
 import com.google.common.collect.Ordering;
+
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class AnagramFinderTest {
 
-    private final PrintStream standardOut = System.out;
-    private final ByteArrayOutputStream outputStreamCapture = new ByteArrayOutputStream();
+    private AnagramFinder af;
 
+    //Test 1
     @Test
-    public void TestIO() {
-        System.setOut(new PrintStream(outputStreamCapture));
+    public void TestNullListE(){
+        af = new AnagramFinder();
 
-        AnagramFinder.main(null);
-
-        String expected = "[[dale, deal, lead], [evil, vile], [listen, silent], [monkeys write], [new york times], [talent]]";
-
-        assertEquals(expected, outputStreamCapture.toString().trim());
+        Exception nullListE = assertThrows(Exception.class, () -> af.findAllAnagrams(null));
+        assertEquals("Param 'wordList' is null or empty", nullListE.getMessage());
 
     }
 
+    //Test 2
     @Test
-    public void TestError(){
-        String[] l1 = {"dale","vale", "veal", "", "lead"};
-        String[] l2 = {"dale","vale", "veal", null, "lead"};
+    public void TestEmptyListE(){
+        af = new AnagramFinder();
 
-        Exception nullListE = assertThrows(Exception.class, () -> AnagramFinder.findAllAnagrams(null));
-        assertEquals("Param 'wordList' is null or empty", nullListE.getMessage());
-        Exception emptyValE = assertThrows(Exception.class, () -> AnagramFinder.findAllAnagrams(Arrays.asList(l1)));
-        assertEquals("Param 'wordList' contains null or empty val", emptyValE.getMessage());
-        Exception emptyListE = assertThrows(Exception.class, () -> AnagramFinder.findAllAnagrams(new ArrayList<>()));
-        assertEquals("Param 'wordList' is null or empty", emptyListE.getMessage());
-        Exception nullValE = assertThrows(Exception.class, () -> AnagramFinder.findAllAnagrams(Arrays.asList(l2)));
+        List<List<String>> emptyListE = af.findAllAnagrams(new ArrayList<>());
+        assertEquals(0, emptyListE.size());
+    }
+
+    //Test 3
+    @Test
+    public void TestNullValE(){
+        af = new AnagramFinder();
+
+        String[] nullValL = {"dale","vale", "veal", null, "lead"};
+
+        Exception nullValE = assertThrows(Exception.class, () -> af.findAllAnagrams(Arrays.asList(nullValL)));
         assertEquals("Param 'wordList' contains null or empty val", nullValE.getMessage());
 
     }
 
+    //Test 4
     @Test
-    public void TestIgnoreDuplicate(){
-        String[] l = {"lead","silent","dale","talent","new york times","vile","talent","deal","listen", "monkeys write", "evil"};
-        List<String> actual = AnagramFinder.removeDuplicate(Arrays.asList(l));
-        String[] expected = {"lead","silent","dale","talent","new york times","vile","deal","listen", "monkeys write", "evil"};
-        Arrays.sort(expected);
-        Collections.sort(actual);
-        assertEquals(Arrays.asList(expected), actual);
+    public void TestEmptyValE(){
+        af = new AnagramFinder();
+        String[] emptyValL = {"dale","vale", "veal", "", "lead"};
+
+        Exception emptyValE = assertThrows(Exception.class, () -> af.findAllAnagrams(Arrays.asList(emptyValL)));
+        assertEquals("Param 'wordList' contains null or empty val", emptyValE.getMessage());
     }
 
+
+    //Test 5
+    @Test
+    public void TestIgnoreDuplicate(){
+        af = new AnagramFinder();
+        String[] l = {"lead","silent","dale","talent","new york times","vile","talent","deal","listen", "monkeys write", "evil"};
+        List<List<String>> test = af.findAllAnagrams(Arrays.asList(l));
+        List<String> actual = new ArrayList<>();
+        for(List<String> sl : test){
+            actual.addAll(sl);
+        }
+        assertTrue(Arrays.asList(l).size() > actual.size());
+    }
+
+    //Test 6
+    @Test
+    public void TestSingleWord(){
+        af = new AnagramFinder();
+        String[] list = {"fish"};
+        assertEquals(0, af.findAllAnagrams(Arrays.asList(list)).size());
+    }
+
+    //Test 7
+    @Test
+    public void TestNoAnagrams(){
+        af = new AnagramFinder();
+        String[] list = {"bee", "ebb"};
+        assertEquals(0, af.findAllAnagrams(Arrays.asList(list)).size());
+    }
+
+    //Test 8
+    @Test
+    public void TestTwoWords(){
+        af = new AnagramFinder();
+
+        String[] list = {"sham", "mash"};
+        List<List<String>> actual = af.findAllAnagrams(Arrays.asList(list));
+        assertEquals(1, actual.size());
+
+        for (List<String> l: actual) {
+            assertTrue(Ordering.natural().isOrdered(l));
+        }
+
+    }
+
+    //Test 9
     @Test
     public void TestReturns(){
-        String[] l1 = {"fish"};
-        assertEquals(1, AnagramFinder.findAllAnagrams(Arrays.asList(l1)).size());
-        String[] l2 = {"fish", "lard"};
-        assertEquals(2, AnagramFinder.findAllAnagrams(Arrays.asList(l2)).size());
-        String[] l3 = {"sham", "mash"};
-        assertEquals(1, AnagramFinder.findAllAnagrams(Arrays.asList(l3)).size());
-        for (List<String> l:AnagramFinder.findAllAnagrams(Arrays.asList(l3))) {
-            assertTrue(Ordering.natural().isOrdered(l));
+        af = new AnagramFinder();
+
+        String[] list = {"lead", "silent","dale","talent","new york times","vile","deal","listen", "monkeys write", "evil"};
+        List<String> expected  = new ArrayList<>();
+        for (List<String> sList :af.findAllAnagrams(Arrays.asList(list))) {
+            expected.add(sList.get(0));
+            assertTrue(Ordering.natural().isOrdered(sList));
         }
-        String[] l4 = {"lead", "silent","dale","talent","new york times","vile","deal","listen", "monkeys write", "evil"};
-        List<String> e  = new ArrayList<>();
-        for (List<String> l:AnagramFinder.findAllAnagrams(Arrays.asList(l4))) {
-            e.add(l.get(0));
-            assertTrue(Ordering.natural().isOrdered(l));
-        }
-        assertTrue(Ordering.natural().isOrdered(e));
+        assertTrue(Ordering.natural().isOrdered(expected));
+    }
+
+    //Test 10
+    @Test
+    public void TestCaseInsensitive(){
+        af = new AnagramFinder();
+        String[] l = {"SILENT", "listen", "taLent", "LatenT"};
+        List<List<String>> actual = af.findAllAnagrams(Arrays.asList(l));
+        String expected = "[[LatenT, taLent], [listen, SILENT]]";
+        assertEquals(expected, actual.toString());
     }
 
 }

@@ -5,13 +5,14 @@ package AnagramFinderTemplate_Java;
 
 import java.util.*;
 
+
 public class AnagramFinder {
     public static void main(String[] args) {
-
+       //TODO
     }
 
-    public static List< List<String> > findAllAnagrams(List<String> wordList) throws IllegalArgumentException{
-
+    public List<List<String>> findAllAnagrams(List<String> wordList) throws IllegalArgumentException{
+        //TODO
     }
 
 }
