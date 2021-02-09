@@ -3,9 +3,6 @@
  */
 package AnagramFinderTemplate_Java;
 
-import java.util.*;
-
-
 public class AnagramFinder {
     public static void main(String[] args) {
        //TODO
