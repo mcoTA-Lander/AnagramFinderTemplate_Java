@@ -11,6 +11,11 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/*
+* ANY CHANGE OR MANIPULATION OF THIS TEST CLASS 
+* WILL RESULT IN AN AUTOMATIC POINT DEDUCTION
+*/
+
 public class AnagramFinderTest {
 
     private AnagramFinder af;
